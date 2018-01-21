@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="bin\forwarder.js" type="NodeJSConfigurationType" factoryName="Node.js" application-parameters="-l &quot;127.0.0.1:8080&quot; -f &quot;127.0.0.1:80&quot; -a &quot;encrypt&quot;" path-to-js-file="bin/forwarder.js" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="DEBUG" value="forwarder2:*" />
+    </envs>
+    <EXTENSION ID="com.jetbrains.nodejs.run.NodeJSStartBrowserRunConfigurationExtension">
+      <browser url="http://localhost:3000/" />
+    </EXTENSION>
+    <method />
+  </configuration>
+</component>
