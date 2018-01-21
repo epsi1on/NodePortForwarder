@@ -12,6 +12,9 @@ var listenOn = argv.l==null?null:argv.l.match(addrRegex);
 var forwardTo =  argv.f==null?null:argv.f.match(addrRegex);
 var action = argv.a;
 
+if(action != null)
+    action = action.toLowerCase();
+
 if(listenOn == null || forwardTo == null || action == null)
 {
     console.log('Usage: node forward.js -l "listen_socket" -f "forward_socket" -a "action"');
@@ -30,7 +33,6 @@ else
     console.log('port forwarder started successfully ...');
 }
 
-
 options = {
     ListenOn:{
         Host:listenOn[2],
@@ -41,45 +43,67 @@ options = {
         Host:forwardTo[2],
         Port:forwardTo[3]
     },
+
+    Action : action
 }
 
-var srv = net.createServer(function(from) {
+var srv;
+srv = net.createServer(function (from) {
     var to = net.createConnection({
         host: options.ForwardTo.Host,
         port: options.ForwardTo.Port
     });
-
-    from.on('data', function(chunk) {
-        if(options.Action.toLowerCase() == "encrypt")
+    /**/
+    from.on('data', function (chunk) {
+        if (action == "encrypt")
             encode(chunk);
 
-        if(options.Action.toLowerCase() == "decrypt")
+        if (action == "decrypt")
             decode(chunk);
 
         to.write(chunk);
     });
-    from.on('end', to.end);
 
+    from.on('end', function () {
+        to.end();
+        console.log("ended");
+    });
 
-    to.on('data', function(chunk) {
-        if(options.Action.toLowerCase() == "encrypt")
+    from.on('error', function () {
+        to.end();
+        console.log("error");
+    });
+
+    to.on('data', function (chunk) {
+        if (action == "decrypt")
             decode(chunk);
 
-        if(options.Action.toLowerCase() == "decrypt")
+        if (action == "encrypt")
             encode(chunk);
 
-        to.write(chunk);
+        from.write(chunk);
     });
-    to.on('end', from.end);
 
-    //from.pipe(to);
-    //to.pipe(from);
+    to.on('end', function () {
+        from.end()
+    });
 
-})
-    if(options.ListenOn.Host!=null)
-        srv.listen(options.ListenOn.Port);
-    else
-        srv.listen(options.ListenOn.Port, options.ListenOn.Host);
+    to.on('error', function () {
+        from.end();
+        console.log("error");
+    });
+    /**/
+    /*
+        from.pipe(to);
+        to.pipe(from);
+    */
+    //from.on('error', to.end);
+    //to.on('error', from.end);
+
+
+});
+
+srv.listen(options.ListenOn.Port, options.ListenOn.Host);
 
 function encode(data)
 {

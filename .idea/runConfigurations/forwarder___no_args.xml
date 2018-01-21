@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="bin\forwarder.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-js-file="bin/forwarder.js" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="forwarder - no args" type="NodeJSConfigurationType" factoryName="Node.js" path-to-js-file="bin/forwarder.js" working-dir="$PROJECT_DIR$">
     <envs>
       <env name="DEBUG" value="forwarder2:*" />
     </envs>
