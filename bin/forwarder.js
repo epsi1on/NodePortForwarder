@@ -14,7 +14,7 @@ if(listenOn != null) listenOn = listenOn.match(addrRegex);
 var forwardTo = argv.f || process.env.f;
 if(forwardTo != null) forwardTo = forwardTo.match(addrRegex);
 
-var action = argv.a || process.env.f;
+var action = argv.a || process.env.a;
 
 if(action != null) action = action.toLowerCase();
 
