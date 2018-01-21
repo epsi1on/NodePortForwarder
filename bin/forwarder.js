@@ -64,7 +64,7 @@ else
     console.log('port forwarder started successfully ...');
 
 
-    options = {
+    var options = {
         ListenOn:{
             Host:listenOn[2],
             Port:listenOn[3]
@@ -94,14 +94,10 @@ else
 
             to.write(chunk);
         });
-
         from.on('end', function () {
             to.end();
         });
 
-        from.on('error', function () {
-            to.end();
-        });
 
         to.on('data', function (chunk) {
             if (action == "decrypt")
@@ -116,42 +112,32 @@ else
         to.on('end', function () {
             from.end()
         });
-
-        to.on('error', function () {
-            from.end();
-        });
-        /**/
-        /*
-            from.pipe(to);
-            to.pipe(from);
-        */
-        //from.on('error', to.end);
-        //to.on('error', from.end);
-
-
     });
 
     srv.listen(options.ListenOn.Port, options.ListenOn.Host);
-
-    function encode(data)
-    {
-        for(var i=0;i<data.length;i++)
-        {
-            data[i]=255-data[i];//simple NOT logical gate
-        }
-    }
-
-    function decode(data)
-    {
-        for(var i=0;i<data.length;i++)
-        {
-            data[i]=255-data[i];//simple NOT logical gate
-        }
-    }
-
 
     process.on('SIGINT', function() {
         console.log("Caught interrupt signal");
         process.exit();
     });
+
+    process.on('uncaughtException', function (err) {
+        //console.log(err);
+    })
+}
+
+function encode(data)
+{
+    for(var i=0;i<data.length;i++)
+    {
+        data[i]=255-data[i];//simple NOT logical gate
+    }
+}
+
+function decode(data)
+{
+    for(var i=0;i<data.length;i++)
+    {
+        data[i]=255-data[i];//simple NOT logical gate
+    }
 }
