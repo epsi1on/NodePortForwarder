@@ -7,7 +7,7 @@ A simple port forwarder for Node with ability to encrypt/decrypt bytes (simple N
 Usage
 =======
 Usage:
-```node forward.js -l "listen_socket" -f "forward_socket" -a "action"```
+```$> node forward.js -l "listen_socket" -f "forward_socket" -a "action"```
 
 - listen_socket : Forwarder listen on this socket for income connection.
 - forward_socket : Once new connection arrived at ``ListenTo`` socket, forwarder will accept it and pipe the income socket into this socket.

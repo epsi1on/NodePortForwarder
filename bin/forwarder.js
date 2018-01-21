@@ -8,8 +8,8 @@ var addrRegex = /^(([a-zA-Z\-\.0-9]+):)?(\d+)$/;
 
 var argv = require('minimist')(process.argv.slice(2));
 
-var listenOn = argv.l.match(addrRegex);
-var forwardTo =  argv.f.match(addrRegex);
+var listenOn = argv.l==null?null:argv.l.match(addrRegex);
+var forwardTo =  argv.f==null?null:argv.f.match(addrRegex);
 var action = argv.a;
 
 if(listenOn == null || forwardTo == null || action == null)
