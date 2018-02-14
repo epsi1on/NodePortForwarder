@@ -117,7 +117,9 @@ else
         });
     });
 
-    srv.listen(options.ListenOn.Port, options.ListenOn.Host);
+    var res = srv.listen(options.ListenOn.Port, options.ListenOn.Host);
+
+    srv.on('error',function (e) {console.log(e);});
 
     process.on('SIGINT', function() {
         console.log("Caught interrupt signal");
