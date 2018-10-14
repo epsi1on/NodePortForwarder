@@ -18,6 +18,8 @@ var action = argv.a || process.env.a;
 
 if(action != null) action = action.toLowerCase();
 
+var verbose = argv.v || false;
+
 if(listenOn == null || forwardTo == null || action == null)
 {
     console.log('Usage: node forward.js -l "listen_socket" -f "forward_socket" -a "action"');
@@ -65,7 +67,8 @@ else
     console.log('forwarding to: '+ forwardTo[0]);
     console.log('action: '+ action);
     console.log('port forwarder started successfully ...');
-
+	if(verbose)
+		console.log('verbose mode');
 
     var options = {
         ListenOn:{
@@ -83,12 +86,20 @@ else
 
     var srv;
     srv = net.createServer(function (from) {
+		
+		if(verbose)
+			console.log('incoming connection @ '+Date.now().toString());
+		
         var to = net.createConnection({
             host: options.ForwardTo.Host,
             port: options.ForwardTo.Port
         });
         /**/
         from.on('data', function (chunk) {
+			
+			if(verbose)
+				console.log('sending data to target ,Length = '+chunk.length);
+		
             if (action == "encrypt")
                 encode(chunk);
 
@@ -103,6 +114,10 @@ else
 
 
         to.on('data', function (chunk) {
+			
+			if(verbose)
+				console.log('receiving data from target ,Length = '+chunk.length);
+			
             if (action == "decrypt")
                 decode(chunk);
 
@@ -127,7 +142,7 @@ else
     });
 
     process.on('uncaughtException', function (err) {
-        //console.log(err);
+        console.log(err);
     })
 }
 
@@ -137,6 +152,9 @@ function encode(data)
     {
         data[i]=255-data[i];//simple NOT logical gate
     }
+	
+	if(verbose)
+		console.log("encrypting data");
 }
 
 function decode(data)
@@ -145,4 +163,7 @@ function decode(data)
     {
         data[i]=255-data[i];//simple NOT logical gate
     }
+	
+	if(verbose)
+		console.log("decrypting data");
 }
