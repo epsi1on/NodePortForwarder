@@ -96,16 +96,19 @@ else
         });
         /**/
         from.on('data', function (chunk) {
-			
+
 			if(verbose)
-				console.log('sending data to target ,Length = '+chunk.length);
-		
+				console.log('received '+chunk.length + " bytes from " +options.ListenOn.Host + ':' + options.ListenOn.Port);
+			
             if (action == "encrypt")
                 encode(chunk);
 
             if (action == "decrypt")
                 decode(chunk);
 
+			if(verbose)
+				console.log('sending '+chunk.length + " bytes to " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
+			
             to.write(chunk);
         });
         from.on('end', function () {
@@ -116,15 +119,19 @@ else
         to.on('data', function (chunk) {
 			
 			if(verbose)
-				console.log('receiving data from target ,Length = '+chunk.length);
+				console.log('received '+chunk.length + " bytes from " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
 			
-            if (action == "decrypt")
+            if (action == "encrypt")
                 decode(chunk);
 
-            if (action == "encrypt")
+            if (action == "decrypt")
                 encode(chunk);
 
+			if(verbose)
+				console.log('sending '+chunk.length + " bytes to " +options.ListenOn.Host + ':' + options.ListenOn.Port);
+			
             from.write(chunk);
+			
         });
 
         to.on('end', function () {
