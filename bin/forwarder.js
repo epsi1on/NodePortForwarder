@@ -73,7 +73,7 @@ else
 	if(verbose)
 		console.log('verbose mode');
 	
-	if(verbose)
+	if(vverbose)
 		console.log('verbose^2 mode');
 
     var options = {
