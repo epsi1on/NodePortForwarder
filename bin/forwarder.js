@@ -18,10 +18,15 @@ var action = argv.a || process.env.a;
 
 if(action != null) action = action.toLowerCase();
 
-var verbose = argv.v || false;
+var verbLevel = argv.v || 0;
 
-var vverbose = argv.vv || false;
+if(verbLevel>=1)
+var verbose = true;
 
+if(verbLevel>=2)
+var vverbose = true;
+
+//console.log(argv);
 
 if(listenOn == null || forwardTo == null || action == null)
 {
@@ -71,10 +76,10 @@ else
     console.log('action: '+ action);
     console.log('port forwarder started successfully ...');
 	if(verbose)
-		console.log('verbose mode');
+		console.log('Verbose mode');
 	
 	if(vverbose)
-		console.log('verbose^2 mode');
+		console.log('Verbose^2 mode');
 
     var options = {
         ListenOn:{
@@ -106,14 +111,15 @@ else
 			if(verbose)
 			{
 				console.log('received '+chunk.length + " bytes from " +options.ListenOn.Host + ':' + options.ListenOn.Port);
+				var dt = '';
 				
 				if(vverbose)
 				{
 					for(var i=0;i<chunk.length;i++)
 					{
-						process.stdout.write(chunk[i].toString(16) + " ");
+						dt += "0x"+chunk[i].toString(16)+" ";
 					}
-	
+					console.log(dt);
 				}	
 			}	
 			
@@ -126,14 +132,14 @@ else
 			if(verbose)
 			{
 				console.log('sending '+chunk.length + " bytes to " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
-				
+				var dt = '';
 				if(vverbose)
 				{
 					for(var i=0;i<chunk.length;i++)
 					{
-						process.stdout.write(chunk[i].toString(16) + " ");
+						dt += "0x"+chunk[i].toString(16)+" ";
 					}
-	
+					console.log(dt);
 				}	
 			}
 			
@@ -149,14 +155,14 @@ else
 			if(verbose)
 			{
 				console.log('received '+chunk.length + " bytes from " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
-				
+				var dt = '';
 				if(vverbose)
 				{
 					for(var i=0;i<chunk.length;i++)
 					{
-						process.stdout.write(chunk[i].toString(16) + " ");
+						dt += "0x"+chunk[i].toString(16)+" ";
 					}
-	
+					console.log(dt);
 				}	
 			}
 			
@@ -169,14 +175,14 @@ else
 			if(verbose)
 			{
 				console.log('sending '+chunk.length + " bytes to " +options.ListenOn.Host + ':' + options.ListenOn.Port);
-				
+				var dt = '';
 				if(vverbose)
 				{
 					for(var i=0;i<chunk.length;i++)
 					{
-						process.stdout.write(chunk[i].toString(16) + " ");
+						dt += "0x"+chunk[i].toString(16)+" ";
 					}
-	
+					console.log(dt);
 				}	
 			}
 				
