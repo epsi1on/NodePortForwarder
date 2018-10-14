@@ -20,6 +20,9 @@ if(action != null) action = action.toLowerCase();
 
 var verbose = argv.v || false;
 
+var vverbose = argv.vv || false;
+
+
 if(listenOn == null || forwardTo == null || action == null)
 {
     console.log('Usage: node forward.js -l "listen_socket" -f "forward_socket" -a "action"');
@@ -69,6 +72,9 @@ else
     console.log('port forwarder started successfully ...');
 	if(verbose)
 		console.log('verbose mode');
+	
+	if(verbose)
+		console.log('verbose^2 mode');
 
     var options = {
         ListenOn:{
@@ -98,7 +104,18 @@ else
         from.on('data', function (chunk) {
 
 			if(verbose)
+			{
 				console.log('received '+chunk.length + " bytes from " +options.ListenOn.Host + ':' + options.ListenOn.Port);
+				
+				if(vverbose)
+				{
+					for(var i=0;i<chunk.length;i++)
+					{
+						process.stdout.write(chunk[i].toString(16) + " ");
+					}
+	
+				}	
+			}	
 			
             if (action == "encrypt")
                 encode(chunk);
@@ -107,7 +124,18 @@ else
                 decode(chunk);
 
 			if(verbose)
+			{
 				console.log('sending '+chunk.length + " bytes to " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
+				
+				if(vverbose)
+				{
+					for(var i=0;i<chunk.length;i++)
+					{
+						process.stdout.write(chunk[i].toString(16) + " ");
+					}
+	
+				}	
+			}
 			
             to.write(chunk);
         });
@@ -119,7 +147,18 @@ else
         to.on('data', function (chunk) {
 			
 			if(verbose)
+			{
 				console.log('received '+chunk.length + " bytes from " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
+				
+				if(vverbose)
+				{
+					for(var i=0;i<chunk.length;i++)
+					{
+						process.stdout.write(chunk[i].toString(16) + " ");
+					}
+	
+				}	
+			}
 			
             if (action == "encrypt")
                 decode(chunk);
@@ -128,7 +167,19 @@ else
                 encode(chunk);
 
 			if(verbose)
+			{
 				console.log('sending '+chunk.length + " bytes to " +options.ListenOn.Host + ':' + options.ListenOn.Port);
+				
+				if(vverbose)
+				{
+					for(var i=0;i<chunk.length;i++)
+					{
+						process.stdout.write(chunk[i].toString(16) + " ");
+					}
+	
+				}	
+			}
+				
 			
             from.write(chunk);
 			
