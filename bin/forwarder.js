@@ -151,7 +151,7 @@ else
 			}
             catch(error)
 			{
-				console.error('There was an error sending data upward', err);
+				console.error('There was an error sending data upward', error);
 			}
 			
         });
@@ -210,7 +210,7 @@ else
 			}
             catch(error)
 			{
-				console.error('There was an error sending data backward', err);
+				console.error('There was an error sending data backward', error);
 			}
 			
         });
