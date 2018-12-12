@@ -71,10 +71,10 @@ if(listenOn == null || forwardTo == null || action == null)
 }
 else
 {
-    console.log('listening on: ' + listenOn[0]);
-    console.log('forwarding to: '+ forwardTo[0]);
-    console.log('action: '+ action);
-    console.log('port forwarder started successfully ...');
+    console.log('Node Port Forwarder Listening on: ' + listenOn[0]);
+    console.log('Node Port Forwarder Forwarding to: ' + forwardTo[0]);
+    console.log('Node Port Forwarder Action: ' + action);
+    console.log('Node Port Forwarder Started Successfully ...');
 	if(verbose)
 		console.log('Verbose mode');
 	
@@ -131,7 +131,7 @@ else
 
 			if(verbose)
 			{
-				console.log('sending '+chunk.length + " bytes to " +options.ForwardTo.Host + ':' + options.ForwardTo.Port);
+				console.log('sending ' + chunk.length + " bytes to " + options.ForwardTo.Host + ':' + options.ForwardTo.Port);
 				var dt = '';
 				if(vverbose)
 				{
@@ -143,7 +143,15 @@ else
 				}	
 			}
 			
-            to.write(chunk);
+			try
+			{
+				to.write(chunk);
+			}
+            catch(error)
+			{
+				console.error('There was an error sending data upward', err);
+			}
+			
         });
         from.on('end', function () {
             to.end();
@@ -186,8 +194,14 @@ else
 				}	
 			}
 				
-			
-            from.write(chunk);
+			try
+			{
+				from.write(chunk);	
+			}
+            catch(error)
+			{
+				console.error('There was an error sending data backward', err);
+			}
 			
         });
 
