@@ -98,6 +98,7 @@ else
     var srv;
     srv = net.createServer(function (from) {
 		
+		var ended = false;
 		if(verbose)
 			console.log('incoming connection @ '+Date.now().toString());
 		
@@ -107,7 +108,8 @@ else
         });
         /**/
         from.on('data', function (chunk) {
-
+			if(ended)
+				return;
 			if(verbose)
 			{
 				console.log('received '+chunk.length + " bytes from " +options.ListenOn.Host + ':' + options.ListenOn.Port);
@@ -155,10 +157,18 @@ else
         });
         from.on('end', function () {
             to.end();
+			ended = true;
+        });
+		from.on('error', function () {
+            to.end();
+			from.end();
+			ended = true;
         });
 
-
         to.on('data', function (chunk) {
+			
+			if(ended)
+				return;
 			
 			if(verbose)
 			{
@@ -204,11 +214,17 @@ else
 			}
 			
         });
-
         to.on('end', function () {
-            from.end()
+            from.end();
+			ended = true;
         });
-    });
+		to.on('error', function () {
+            to.end();
+			from.end();
+			ended = true;
+        });
+   
+   });
 
     var res = srv.listen(options.ListenOn.Port, options.ListenOn.Host);
 
