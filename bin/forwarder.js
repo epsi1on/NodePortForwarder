@@ -7,7 +7,7 @@ var net = require('net');
 var addrRegex = /^(([a-zA-Z\-\.0-9]+):)?(\d+)$/;
 
 var fs = require('fs');
-var json_data = JSON.parse(require('fs').readFileSync('conf.json'));
+var json_data = JSON.parse(require('fs').readFileSync(__dirname +'/conf.json'));
 
 var argv = require('minimist')(process.argv.slice(2));
 
