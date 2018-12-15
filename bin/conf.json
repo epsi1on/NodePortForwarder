@@ -1,7 +1,7 @@
 {
     "forwarder": {
         "listenOn": "127.0.0.1:9150",
-        "forwardTo": "198.143.180.105:8080",
+        "forwardTo": "127.0.0.1:8080",
 		"action" : "encrypt"
     },
 	"cpanel": {
