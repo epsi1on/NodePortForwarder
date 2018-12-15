@@ -29,12 +29,18 @@ var verbose = true;
 if(verbLevel >= 2)
 var vverbose = true;
 
-
+var connectionLog = {};
 
 //console.log(argv);
 
-
-
+function formatBytes(bytes,decimals) {
+   if(bytes == 0) return '0 Bytes';
+   var k = 1024,
+       dm = decimals <= 0 ? 0 : decimals || 2,
+       sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+       i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
 
 if(listenOn == null || forwardTo == null || action == null)
 {
@@ -137,6 +143,11 @@ else
 				}	
 			}	
 			
+			if(connectionLog[from.remoteAddress])
+				connectionLog[from.remoteAddress] += chunk.length;
+			else
+				connectionLog[from.remoteAddress] = chunk.length;
+			
 			
             if (action == "encrypt")
                 encode(chunk);
@@ -197,6 +208,12 @@ else
 				}	
 			}
 			
+			if(connectionLog[from.remoteAddress])
+				connectionLog[from.remoteAddress] += chunk.length;
+			else
+				connectionLog[from.remoteAddress] = chunk.length;
+			
+			
             if (action == "encrypt")
                 decode(chunk);
 
@@ -241,7 +258,44 @@ else
 
     var res = srv.listen(options.ListenOn.Port, options.ListenOn.Host);
 
+	var http = require('http');
+    var url = require('url');
 	
+	if(json_data.cpanel.port)
+		http.createServer(function (req, res) {
+		  var queryData = url.parse(req.url, true).query;
+		  var authorized = false;
+		  var sentSec = '';
+		  
+		  if(queryData.secret)
+			  sentSec = queryData.secret;
+		  
+		  var h1 = require('crypto').createHash('md5').update(sentSec).digest('hex');
+		  var h2 = require('crypto').createHash('md5').update(h1).digest('hex');
+			  
+		  authorized  = (h2 == json_data.cpanel.secretDoubleMd5);
+		  
+		  if(authorized)
+		  {
+			  res.write('<html> Bandwidth Usage by IP: </br>');
+			  
+			  for (var k in connectionLog){
+					if (connectionLog.hasOwnProperty(k)) {
+						
+						res.write('<p>'+k+':'+formatBytes(connectionLog[k],2));
+						//alert("Key is " + k + ", value is" + target[k]);
+					}
+				}
+			res.write('</html>');
+		  }
+		  else
+		  {
+			  res.write('<html><h1>404 not found!!!</h1></html>'); //write a response to the client
+		  }
+		  
+		  res.end(); //end the response
+		}).listen(json_data.cpanel.port); //the server object listens on port 80
+
 	
     process.on('SIGINT', function() {
         console.log("Caught interrupt signal");

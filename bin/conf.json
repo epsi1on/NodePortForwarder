@@ -3,5 +3,9 @@
         "listenOn": "127.0.0.1:9150",
         "forwardTo": "198.143.180.105:8080",
 		"action" : "encrypt"
+    },
+	"cpanel": {
+       "secretDoubleMd5":"74be16979710d4c4e7c6647856088456",
+	   "port":"80"
     }
 }
