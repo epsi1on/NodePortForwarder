@@ -6,36 +6,47 @@
 var net = require('net');
 var addrRegex = /^(([a-zA-Z\-\.0-9]+):)?(\d+)$/;
 
+var fs = require('fs');
+var json_data = JSON.parse(require('fs').readFileSync('conf.json'));
+
 var argv = require('minimist')(process.argv.slice(2));
 
-var listenOn = argv.l || process.env.l;
+var listenOn = argv.l || process.env.l || json_data.forwarder.listenOn;
 if(listenOn != null) listenOn = listenOn.match(addrRegex);
 
-var forwardTo = argv.f || process.env.f;
+var forwardTo = argv.f || process.env.f || json_data.forwarder.forwardTo;
 if(forwardTo != null) forwardTo = forwardTo.match(addrRegex);
 
-var action = argv.a || process.env.a;
+var action = argv.a || process.env.a || json_data.forwarder.action;
 
 if(action != null) action = action.toLowerCase();
 
 var verbLevel = argv.v || 0;
 
-if(verbLevel>=1)
+if(verbLevel >= 1)
 var verbose = true;
 
-if(verbLevel>=2)
+if(verbLevel >= 2)
 var vverbose = true;
+
+
 
 //console.log(argv);
 
+
+
+
 if(listenOn == null || forwardTo == null || action == null)
 {
-    console.log('Usage: node forward.js -l "listen_socket" -f "forward_socket" -a "action"');
+    console.log('Usage1: node forward.js -l "listen_socket" -f "forward_socket" -a "action"');
     console.log('   listen_socket: socket to listen on');
     console.log('   forward_socket: socket to forward into');
     console.log('   action: the action, three possible values: encrypt, decrypt, none');
     console.log('example: node forward.js -l "127.0.0.1:8080" -f "127.0.0.1:80" -a "encrypt"');
     console.log('above example will listen on 127.0.0.1:8080 and forwards connections into 127.0.0.1:80 and encrypt data');
+	console.log('Usage2: node forward.js');
+	console.log('above example will read configs from conf.json file');
+	
     console.log('hovewer the IP list of this host is:');
     {
         'use strict';
@@ -110,6 +121,7 @@ else
         from.on('data', function (chunk) {
 			if(ended)
 				return;
+			
 			if(verbose)
 			{
 				console.log('received '+chunk.length + " bytes from " +options.ListenOn.Host + ':' + options.ListenOn.Port);
@@ -124,6 +136,7 @@ else
 					console.log(dt);
 				}	
 			}	
+			
 			
             if (action == "encrypt")
                 encode(chunk);
@@ -228,8 +241,8 @@ else
 
     var res = srv.listen(options.ListenOn.Port, options.ListenOn.Host);
 
-    //srv.on('error',function (e) {console.log(e);});
-
+	
+	
     process.on('SIGINT', function() {
         console.log("Caught interrupt signal");
         process.exit();
