@@ -124,6 +124,15 @@ else
             port: options.ForwardTo.Port
         });
         /**/
+		function closeSession() {
+		   to.destroy();
+		   from.destroy();
+		   ended = true;
+		   delete to;
+		   delete from;
+		}
+
+		
         from.on('data', function (chunk) {
 			if(ended)
 				return;
@@ -180,13 +189,10 @@ else
 			
         });
         from.on('end', function () {
-            to.end();
-			ended = true;
+            closeSession();
         });
 		from.on('error', function () {
-            to.end();
-			from.end();
-			ended = true;
+            closeSession();
         });
 
         to.on('data', function (chunk) {
@@ -245,13 +251,10 @@ else
 			
         });
         to.on('end', function () {
-            from.end();
-			ended = true;
+            closeSession();
         });
 		to.on('error', function () {
-            to.end();
-			from.end();
-			ended = true;
+            closeSession();
         });
    
    });
