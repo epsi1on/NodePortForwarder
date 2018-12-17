@@ -326,7 +326,7 @@ var encKey = json_data.forwarder['encKey'] || 128;
 
 function encode(data) {
     for (var i = 0; i < data.length; i++) {
-        data[i] = data[i] ^ enckey; //simple Xor logical gate
+        data[i] = data[i] ^ encKey; //simple Xor logical gate
     }
 
     if (verbose)
@@ -335,7 +335,7 @@ function encode(data) {
 
 function decode(data) {
     for (var i = 0; i < data.length; i++) {
-        data[i] = data[i] ^ enckey; //simple Xor logical gate
+        data[i] = data[i] ^ encKey; //simple Xor logical gate
     }
 
     if (verbose)
