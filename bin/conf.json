@@ -1,13 +1,14 @@
 {
     "forwarder": {
-        "listenOn": "127.0.0.1:9150",
+        "listenOn": "127.0.0.1:9152",
         "forwardTo": "127.0.0.1:8080",
-		"action" : "none",
+		"action" : "encrypt",
 		"verbLevel" : "2",
-		"obfuscate" : "false"
+		"obfuscate" : "true",
+		"encKey" : "128"
     },
 	"cpanel": {
        "secretDoubleMd5":"74be16979710d4c4e7c6647856088456",
-	   "port":"80"
+	   "port":""
     }
 }

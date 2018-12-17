@@ -92,6 +92,7 @@ if (listenOn == null || forwardTo == null || action == null) {
     console.log('Node Port Forwarder Listening on: ' + listenOn[0]);
     console.log('Node Port Forwarder Forwarding to: ' + forwardTo[0]);
     console.log('Node Port Forwarder Action: ' + action);
+	console.log('Node Port Forwarder Obfuscate: ' + obfuscate);
     console.log('Node Port Forwarder Started Successfully ...');
     if (verbose)
         console.log('Verbose mode');
@@ -321,9 +322,11 @@ if (listenOn == null || forwardTo == null || action == null) {
 
 }
 
+var encKey = json_data.forwarder['encKey'] || 128;
+
 function encode(data) {
     for (var i = 0; i < data.length; i++) {
-        data[i] = 255 - data[i]; //simple NOT logical gate
+        data[i] = data[i] ^ enckey; //simple Xor logical gate
     }
 
     if (verbose)
@@ -332,7 +335,7 @@ function encode(data) {
 
 function decode(data) {
     for (var i = 0; i < data.length; i++) {
-        data[i] = 255 - data[i]; //simple NOT logical gate
+        data[i] = data[i] ^ enckey; //simple Xor logical gate
     }
 
     if (verbose)
