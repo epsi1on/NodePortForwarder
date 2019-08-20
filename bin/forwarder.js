@@ -22,6 +22,13 @@ var verbLevel = argv.v || json_data.forwarder.verbLevel || 0;
 
 var obfuscate = argv.o || json_data.forwarder.obfuscate || 0;
 
+if(obfuscate == true)
+	obfuscate = true;
+
+if(obfuscate == false)
+	obfuscate = false;
+
+
 if (verbLevel >= 1)
     var verbose = true;
 
@@ -150,7 +157,8 @@ if (listenOn == null || forwardTo == null || action == null) {
 				firstfromRead = false;
 				//console.log(chunk.toString('utf8'))
 				if (chunk.length != 3)
-				 if (chunk.toString('utf8').startsWith('GET '))
+					if (chunk.length > 4)
+				 if (chunk[0] == 71 && chunk[1] == 69 && chunk[2] == 84 && chunk[3] == 32)
 				 {
 					 from.write(new Buffer(httpResponse));
 					 return;
@@ -175,9 +183,16 @@ if (listenOn == null || forwardTo == null || action == null) {
                     console.log(dt);
                 }
             }
+			
 
-            updateStats();
+			var old = connectionLog[from.remoteAddress];
+			
+			if(!old)
+				old = 0;
+            
+			connectionLog[from.remoteAddress] = old + 2*chunk.length;
 
+			
             if (action == "encrypt")
                 encode(chunk);
 
@@ -237,7 +252,14 @@ if (listenOn == null || forwardTo == null || action == null) {
                 }
             }
 
-            updateStats();
+            //updateStats();
+			var old = connectionLog[from.remoteAddress];
+			
+			if(!old)
+				old = 0;
+            
+			connectionLog[from.remoteAddress] = old + 2*chunk.length;
+			
 
             if (action == "encrypt")
                 decode(chunk);
