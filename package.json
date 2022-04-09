@@ -7,7 +7,7 @@
     "start": "node ./bin/forwarder.js"
   },
   "dependencies": {
-    "minimist": "~1.2.2"
+    "minimist": "~1.2.6"
   },
   "repository": {
     "type": "git",
